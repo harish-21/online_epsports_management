@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href={% static "css/stylesheet.css" %}>
+</head>
+
+<body>
+
+    <div class="bg-img">
+        <form action = "{% url 'organiserinput' tourid %}" class="container" method="POST">
+            {% csrf_token %}
+                <center id="head">
+                    <h1> TOURNAMENT INFORMATION</h1>
+                </center>
+                <hr>
+                {% comment %} <div>
+                        <label for="tournament.ID">
+                        TOURNAMENT_ID
+                    </label>
+                    <select name="tourid">
+                        <option value="tournament.ID">ID</option>
+                        {% for i in tour %}
+                        <option value="{{i.tournament_id}}">{{i.tournament_name}}</option>
+                        {% endfor %}
+                    </select>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="Match.ID">
+                        MATCH_ID
+                    </label>
+                    <select>
+                        <option value="Match.ID">ID</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div> {% endcomment %}
+                <div class = "container3">
+                    <div class = "container2">
+                       <label for="team1.id">Team1</label> 
+                        <select name="team1_id" id="team1_id">
+                            <option selected disabled>ID</option>
+                            {% for i in teams%}
+                            <option value="{{i.team_id}}">{{i.team_name}}</option>
+                            {% endfor %}
+                            {% comment %} value="team1.ID" {% endcomment %}
+
+                        </select> <br> <br>
+                        <div id="team1_players"></div>
+                        {% comment %} <div><label for="player1.kills">player1</label>&nbsp;<input type="text" id="player11.kills" name="player11.kills" placeholder="name">&nbsp;<input type="number" id="player11.kills" name="player1.kills" placeholder="kills"></div> 
+                        <div><label for="player2.kills">player2</label>&nbsp;<input type="text" id="player21.kills" name="player21.kills" placeholder="name">&nbsp;<input type="number" id="player21.kills" name="player2.kills" placeholder="kills"></div>
+                        <div><label for="player3.kills">player3</label>&nbsp;<input type="text" id="player31.kills" name="player31.kills" placeholder="name">&nbsp;<input type="number" id="player31.kills" name="player31.kills" placeholder="kills"></div> {% endcomment %}
+                    </div>
+                    <div class = "container2">
+                        <label for="team2.id">Team2</label> 
+                            <select name="team2_id" id="team2_id">
+                                <option selected disabled>ID</option>
+                                {% for i in teams%}
+                                <option value="{{i.team_id}}">{{i.team_name}}</option>
+                                {% endfor %}
+                            </select> <br> <br>
+                            <div id="team2_players"></div>
+                        {% comment %} {% for i in players2 %}
+                        <div><label for="{{i.name}}">{{i.name}}</label>&nbsp;<input type="number" id="{{i.name}}" name="{{i.name}}" placeholder="kills"></div> 
+                        {% endfor %} {% endcomment %}
+                        {% comment %} <div><label for="player1.kills">player1</label>&nbsp;<input type="text" id="player12.kills" name="player11.kills" placeholder="name">&nbsp;<input type="number" id="player12.kills" name="player12.kills" placeholder="kills"></div> 
+                        <div><label for="player2.kills">player2</label>&nbsp;<input type="text" id="player22.kills" name="player21.kills" placeholder="name">&nbsp;<input type="number" id="player22.kills" name="player22.kills" placeholder="kills"></div>
+                        <div><label for="player3.kills">player3</label>&nbsp;<input type="text" id="player32.kills" name="player31.kills" placeholder="name">&nbsp;<input type="number" id="player32.kills" name="player32.kills" placeholder="kills"></div> {% endcomment %}
+                    </div>
+                </div>
+
+                <div class = "container2">
+                    <label for="winner">winner</label> 
+                        <select name="winner_id" id="winner_id">
+                            <option selected disabled>ID</option>
+                        </select>
+                </div><br><br>
+                
+               {% comment %} <center><label for="winner">winner</label>&nbsp;<input type="number" name="winner" id="winner" class="winner"></center> {% endcomment %}
+               {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+               <br><center><button type="submit" class="registerbtn">submit</button></center>
+
+        </form>
+    </div>
+    {% block javascript %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script>
+        $("#team1_id").change(function () {
+            const tid = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+            $.ajax({                       // initialize an AJAX request
+                type: "POST",
+                url: '{% url "get_topics_ajax" %}',
+                data: {
+                    'tid': tid,       // add the country id to the POST parameters
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {   // `data` is from `get_topics_ajax` view function
+                    //console. log("hey")
+                    //data = JSON.parse(data); 
+                    let html_data = '';
+                    data.forEach(function (data) {
+                        html_data += `<div><label for="player1.kills">${data.name}</label><br><input type="number" id="${data.id}" name="${data.id}" placeholder="kills"></div>`
+                    });
+                    $("#team1_players").html(html_data); // replace the contents of the topic input with the data that came from the server
+                }
+            });
+        });
+        $("#team2_id").change(function () {
+            const tid = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+            $.ajax({                       // initialize an AJAX request
+                type: "POST",
+                url: '{% url "get_topics_ajax" %}',
+                data: {
+                    'tid': tid,       // add the country id to the POST parameters
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {   // `data` is from `get_topics_ajax` view function
+                    //console. log("hey")
+                    //data = JSON.parse(data); 
+                    let html_data = '';
+                    data.forEach(function (data) {
+                        html_data += `<div><label for="player1.kills">${data.name}</label><br><input type="number" id="${data.id}" name="${data.id}" placeholder="kills"></div>`
+                    });
+                    $("#team2_players").html(html_data); // replace the contents of the topic input with the data that came from the server
+                }
+            });
+            const tid2 = $("#team1_id").val()
+            h_data = `<option value="${tid2}">team1</option><option value="${tid}">team2</option>`
+            $("#winner_id").html(h_data);
+        });
+    </script>
+{% endblock javascript %} 
+</body>
+
+</html>

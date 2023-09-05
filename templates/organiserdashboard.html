@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+<title>Organiser Dashboard</title>
+<link rel="icon" type="image/x-icon" href={% static "img/favicon.ico"%} />
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+        body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+</style>
+</head>
+<body class="w3-light-grey">
+
+<!-- Top container -->
+<div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+  <p>Organiser Dashboard</p>
+</div>
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+  <div class="w3-container w3-row">
+    <div class="w3-col s4">
+      <img src={% static "img/portfolio/user.png" %} class="w3-circle w3-margin-right" style="width:86px">
+    </div>
+    <div class="w3-col s8 w3-bar">
+      <span>Welcome, <strong>{{request.user}}</strong></span><br>
+      {% comment %} <a href="#" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i></a> {% endcomment %}
+     
+      <a href="{% url 'signout' %}" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+    </div>
+  </div>
+  <hr>
+  <div class="w3-container">
+    <h5>Dashboard</h5>
+  </div>
+  <div class="w3-bar-block">
+    <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"></i>  Overview</a>
+    <a href="{% url 'divert2' %}" class="w3-bar-item w3-button w3-padding w3-blue"></i>  Add tournamet</a>
+    <a href="{% url 'divert3' %}" class="w3-bar-item w3-button w3-padding w3-blue"></i>  Add team</a>
+    {% comment %} <a href="{% url 'organiserinput' %}" class="w3-bar-item w3-button w3-padding w3-blue">  Input</a> {% endcomment %}
+  </div>
+</nav>
+
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:300px;margin-top:43px;">
+
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+  {% for i in tour %}
+  <div class="w3-row-padding w3-margin-bottom">
+    <div class="w3-quarter">
+      <div class="w3-container w3-red w3-padding-16">
+        
+        <div class="w3-right">
+          <h3>{{i.tournament_name}}</h3>
+        </div>
+        <a href="{% url 'organiserinput' i.tournament_id %}"><button>Input</button></a>
+      </div>
+    </div>
+    </div>
+  {% endfor %}
+
+  <div class="w3-panel">
+    <div class="w3-row-padding" style="margin:0 -16px">
+     
+      <div class="w3-full">
+        <h5>stats</h5>
+        <table class="w3-table w3-striped w3-white" style="margin-right:20x;">
+          <tr>
+            <td><i class="fa fa-user w3-text-blue w3-large"></i></td>
+            <td>team name.</td>
+            <td><i>Points</i></td>
+          </tr>
+          {% for i in teams%}
+          <tr>
+            <td><i>{{i.n}}</i></td>
+            <td>{{i.name}}</td>
+            <td><i>{{i.points}}</i></td>
+          </tr>
+          {% endfor %}
+          
+          
+        </table>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="w3-panel">
+    <div class="w3-row-padding" style="margin:0 -16px">
+     
+      <div class="w3-full">
+        <h5>stats</h5>
+        <table class="w3-table w3-striped w3-white" style="margin-right:20x;">
+          <tr>
+            <td><i class="fa fa-user w3-text-blue w3-large"></i></td>
+            <td>player name</td>
+            <td><i>kills</i></td>
+          </tr>
+          {% for i in players%}
+          <tr>
+            <td><i>{{i.n}}</i></td>
+            <td>{{i.name}}</td>
+            <td><i>{{i.points}}</i></td>
+          </tr>
+          {% endfor %}
+          
+          
+        </table>
+      </div>
+    </div>
+  </div>
+  <hr>
+ 
+
+ 
+   
+  
+</div>
+
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
